@@ -354,8 +354,8 @@ export async function GET(req: NextRequest) {
 
     const cleanFileName = `TIZGIN-SUV-ASROVCHISI-${certificateNumber}-${lang.toUpperCase()}.pdf`;
 
-    return new NextResponse(pdfBuffer, {
-      status: 200,
+   return new NextResponse(new Uint8Array(pdfBuffer), {
+  status: 200,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${cleanFileName}"`,

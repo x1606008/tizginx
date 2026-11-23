@@ -66,11 +66,11 @@ export async function GET(req: NextRequest) {
          LEFT JOIN Users u ON h.changed_by = u.id
          ORDER BY h.id ASC`
       )
-      .all() as Array<Record<string, unknown>>;
+    .all() as Array<Record<string, any>>;
 
     const nowMs = Date.now();
 
-    let enriched = rows.map((row) => {
+    let enriched: Array<Record<string, any>> = rows.map((row) => {
       const incId = Number(row.id);
       const media = allMedia.filter((m) => Number(m.incident_id) === incId);
       const history = allHistory.filter((h) => Number(h.incident_id) === incId);

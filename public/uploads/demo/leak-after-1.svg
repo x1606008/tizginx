@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+    <defs>
+      <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#052e16"/>
+        <stop offset="100%" stop-color="#082B55"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="500" fill="url(#bg2)"/>
+    <rect x="40" y="300" width="720" height="160" rx="12" fill="#1e293b"/>
+    <rect x="100" y="350" width="600" height="55" rx="8" fill="#0877C9" stroke="#38bdf8" stroke-width="3"/>
+    <rect x="335" y="340" width="130" height="75" rx="8" fill="#35C759" stroke="#ffffff" stroke-width="3"/>
+    <circle cx="360" cy="377" r="7" fill="#ffffff"/>
+    <circle cx="400" cy="377" r="7" fill="#ffffff"/>
+    <circle cx="440" cy="377" r="7" fill="#ffffff"/>
+    <rect x="30" y="25" width="390" height="64" rx="10" fill="#16A34A" fill-opacity="0.95"/>
+    <text x="50" y="55" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">TA'MIRLANDI VA TASDIQLANDI (KEYIN)</text>
+    <text x="50" y="77" fill="#dcfce7" font-family="sans-serif" font-size="14">Yangi po'lat mufta o'rnatildi • Suv oqishi 100% to'xtatildi</text>
+  </svg>

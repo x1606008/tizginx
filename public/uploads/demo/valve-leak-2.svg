@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+    <rect width="800" height="500" fill="#082B55"/>
+    <circle cx="400" cy="280" r="130" fill="#0f172a" stroke="#0877C9" stroke-width="10"/>
+    <rect x="220" y="260" width="360" height="40" fill="#475569"/>
+    <circle cx="400" cy="280" r="48" fill="#F59E0B" stroke="#ffffff" stroke-width="5"/>
+    <path d="M400 232 Q445 140 500 120" stroke="#38bdf8" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M400 232 Q355 150 300 130" stroke="#7dd3fc" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <rect x="30" y="25" width="370" height="64" rx="10" fill="#F59E0B"/>
+    <text x="50" y="55" fill="#071A30" font-family="sans-serif" font-size="20" font-weight="bold">ZULFIN (ZADVIJKA) SHIKASTLANISHI</text>
+    <text x="50" y="77" fill="#071A30" font-family="sans-serif" font-size="14">Quduq ichidan yuqori bosimli sizib chiqish</text>
+  </svg>

@@ -1,0 +1,241 @@
+// ============================================================================
+// TIZGIN — SMART WATER MANAGEMENT PLATFORM
+// Prisma SQLite Schema Reference (Synchronized with data/tizgin.db)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL") // e.g. "file:../data/tizgin.db"
+}
+
+model Region {
+  id          Int          @id @default(autoincrement())
+  name_uz     String
+  name_kaa    String
+  name_en     String
+  name_ru     String
+  users       User[]
+  departments Department[]
+  pipelines   Pipeline[]
+
+  @@map("Regions")
+}
+
+model Department {
+  id                  Int          @id @default(autoincrement())
+  name                String
+  region_id           Int
+  contact_information String
+  region              Region       @relation(fields: [region_id], references: [id], onDelete: Cascade)
+  incidents           Incident[]
+  repair_teams        RepairTeam[]
+
+  @@index([region_id])
+  @@map("Departments")
+}
+
+model User {
+  id                 Int               @id @default(autoincrement())
+  full_name          String
+  email              String            @unique
+  phone              String
+  password_hash      String
+  role               String            @default("CITIZEN") // CITIZEN | EMPLOYEE | MANAGER | ADMIN
+  preferred_language String            @default("uz")      // uz | kaa | en | ru
+  region_id          Int?
+  telegram_chat_id   String?
+  notify_in_app      Int               @default(1)
+  notify_email       Int               @default(1)
+  notify_telegram    Int               @default(0)
+  created_at         DateTime          @default(now())
+  updated_at         DateTime          @updatedAt
+
+  region             Region?           @relation(fields: [region_id], references: [id], onDelete: SetNull)
+  reported_incidents Incident[]        @relation("CitizenIncidents")
+  assigned_incidents Incident[]        @relation("EmployeeIncidents")
+  history_changes    IncidentHistory[]
+  managed_teams      RepairTeam[]
+  notifications      Notification[]
+  rewards            Reward[]
+  certificates       Certificate[]
+  audit_logs         AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@index([region_id])
+  @@map("Users")
+}
+
+model RepairTeam {
+  id            Int        @id @default(autoincrement())
+  name          String
+  department_id Int
+  manager_id    Int
+  specialization String?
+  status        String     @default("ACTIVE")
+  department    Department @relation(fields: [department_id], references: [id], onDelete: Cascade)
+  manager       User       @relation(fields: [manager_id], references: [id], onDelete: Cascade)
+
+  @@index([department_id])
+  @@index([manager_id])
+  @@map("RepairTeams")
+}
+
+model Incident {
+  id                     Int               @id @default(autoincrement())
+  incident_number        String            @unique
+  citizen_id             Int
+  category               String
+  description            String
+  latitude               Float
+  longitude              Float
+  address                String
+  status                 String            @default("REPORTED") // REPORTED -> RECEIVED -> ASSIGNED -> INSPECTION -> REPAIRING -> COMPLETED -> VERIFIED -> CLOSED | REJECTED
+  priority               String            @default("MEDIUM")   // LOW | MEDIUM | HIGH | CRITICAL
+  assigned_employee_id   Int?
+  department_id          Int?
+  estimated_repair_start String?
+  estimated_completion   String?
+  actual_completion      String?
+  delay_reason           String?
+  ai_analysis_json       String?
+  duplicate_of_id        Int?
+  citizen_rating         Int?
+  citizen_feedback       String?
+  is_demo                Int               @default(0)
+  created_at             DateTime          @default(now())
+  updated_at             DateTime          @updatedAt
+
+  citizen                User              @relation("CitizenIncidents", fields: [citizen_id], references: [id], onDelete: Cascade)
+  assigned_employee      User?             @relation("EmployeeIncidents", fields: [assigned_employee_id], references: [id], onDelete: SetNull)
+  department             Department?       @relation(fields: [department_id], references: [id], onDelete: SetNull)
+  media                  IncidentMedia[]
+  history                IncidentHistory[]
+  rewards                Reward[]
+
+  @@index([incident_number])
+  @@index([status])
+  @@index([priority])
+  @@index([citizen_id])
+  @@index([assigned_employee_id])
+  @@index([department_id])
+  @@map("Incidents")
+}
+
+model IncidentMedia {
+  id          Int      @id @default(autoincrement())
+  incident_id Int
+  file_path   String
+  media_type  String   // PHOTO_REPORT | VIDEO_REPORT | BEFORE_REPAIR | AFTER_REPAIR
+  image_hash  String?
+  uploaded_at DateTime @default(now())
+
+  incident    Incident @relation(fields: [incident_id], references: [id], onDelete: Cascade)
+
+  @@index([incident_id])
+  @@map("IncidentMedia")
+}
+
+model IncidentHistory {
+  id              Int      @id @default(autoincrement())
+  incident_id     Int
+  changed_by      Int
+  previous_status String
+  new_status      String
+  notes           String
+  created_at      DateTime @default(now())
+
+  incident        Incident @relation(fields: [incident_id], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [changed_by], references: [id], onDelete: Cascade)
+
+  @@index([incident_id])
+  @@map("IncidentHistory")
+}
+
+model Notification {
+  id                Int      @id @default(autoincrement())
+  user_id           Int
+  title             String
+  message           String
+  notification_type String
+  is_read           Int      @default(0)
+  created_at        DateTime @default(now())
+
+  user              User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, is_read])
+  @@map("Notifications")
+}
+
+model Reward {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  points      Int
+  reason      String
+  incident_id Int?
+  created_at  DateTime  @default(now())
+
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  incident    Incident? @relation(fields: [incident_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id])
+  @@map("Rewards")
+}
+
+model Certificate {
+  id                 Int      @id @default(autoincrement())
+  user_id            Int
+  certificate_number String   @unique
+  verification_code  String   @unique
+  issue_date         String
+  file_path          String
+
+  user               User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("Certificates")
+}
+
+model Pipeline {
+  id                  Int      @id @default(autoincrement())
+  pipeline_code       String   @unique
+  region_id           Int
+  department_id       Int?
+  address             String
+  latitude            Float
+  longitude           Float
+  pipeline_type       String
+  diameter_mm         Int      @default(300)
+  length_m            Int      @default(1200)
+  installation_year   Int
+  technical_condition String   // OPTIMAL | SATISFACTORY | NEEDS_REPAIR | CRITICAL
+  maintenance_history String
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  region              Region   @relation(fields: [region_id], references: [id], onDelete: Cascade)
+
+  @@index([pipeline_code])
+  @@index([region_id])
+  @@map("Pipelines")
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  user_id     Int?
+  action      String
+  entity_type String
+  entity_id   String
+  details     String?
+  created_at  DateTime @default(now())
+
+  user        User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id])
+  @@index([entity_type, entity_id])
+  @@map("AuditLogs")
+}

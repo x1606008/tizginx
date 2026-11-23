@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --tizgin-navy: #082B55;
+  --tizgin-ocean: #0877C9;
+  --tizgin-green: #35C759;
+  --tizgin-bg: #F4F8FC;
+  --tizgin-dark: #071A30;
+}
+
+body {
+  background-color: #F4F8FC;
+  color: #0f172a;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.dark body {
+  background-color: #071A30;
+  color: #f8fafc;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(8, 43, 85, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(8, 119, 201, 0.45);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(8, 119, 201, 0.75);
+}
+
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+}
